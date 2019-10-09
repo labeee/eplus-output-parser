@@ -48,10 +48,13 @@ df.balanco <- function(df, zt, internal_walls, external_walls, floor, roof, wind
     roof = -sumcols(df, roof, '.Surface.Inside.Face.Convection.Heat.Gain.Energy..J..')/divisor
   )
   
-  if(any(grepl('Zone.Air.System.Sensible',colnames(df)))){
-    df_balanco$cooling = -df[,grepl(paste0(zt,'.Zone.Air.System.Sensible.Cooling.Energy..J..'),colnames(df))]/divisor
-    df_balanco$heating = df[,grepl(paste0(zt,'.Zone.Air.System.Sensible.Heating.Energy..J..'),colnames(df))]/divisor
-  }
+  if(any(grepl('Zone.Air.System.Sensible',colnames(df)))){ 
+    if((sum(df[,grepl(paste0(zt,'.Zone.Air.System.Sensible.Cooling.Energy..J.'),colnames(df))]) != 0)){
+      df_balanco$cooling = -df[,grepl(paste0(zt,'.Zone.Air.System.Sensible.Cooling.Energy..J.'),colnames(df))]/divisor
+   }
+    if((sum(df[,grepl(paste0(zt,'.Zone.Air.System.Sensible.Heating.Energy..J.'),colnames(df))])) != 0){
+      df_balanco$heating = df[,grepl(paste0(zt,'.Zone.Air.System.Sensible.Heating.Energy..J..'),colnames(df))]/divisor
+   }
   
   if(any(grepl('Infiltration',colnames(df)))){
     df_balanco$vn_loss = -df[,grepl(paste0(zt,'.AFN.Zone.Infiltration.Sensible.Heat.Loss.Energy..J..'),colnames(df))]/divisor
